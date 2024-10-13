@@ -427,8 +427,10 @@ void UALSCharacterAnimInstance::SetPelvisIKOffset(float DeltaSeconds, FVector Fo
 
 	if (FootIKValues.PelvisAlpha > 0.0f)
 	{
+		// Need AddOffset to account for different type of character's leg length
+		const FVector AddOffset = FVector(0.0, 0.0, Config.PelvisIKAddOffset);
 		// Step 1: Set the new Pelvis Target to be the lowest Foot Offset
-		const FVector PelvisTarget = FootOffsetLTarget.Z < FootOffsetRTarget.Z ? FootOffsetLTarget : FootOffsetRTarget;
+		const FVector PelvisTarget = FootOffsetLTarget.Z < FootOffsetRTarget.Z ? FootOffsetLTarget + AddOffset : FootOffsetRTarget + AddOffset;
 
 		// Step 2: Interp the Current Pelvis Offset to the new target value.
 		//Interpolate at different speeds based on whether the new target is above or below the current one.
