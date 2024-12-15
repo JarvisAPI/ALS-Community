@@ -86,6 +86,8 @@ protected:
 	bool CanDynamicTransition() const;
 
 private:
+	void Initialize();
+
 	void PlayDynamicTransitionDelay();
 
 	void OnJumpedDelay();
@@ -289,6 +291,8 @@ public:
 	FName IkFootR_BoneName = FName(TEXT("ik_foot_r"));
 
 private:
+	bool bInitialized;
+
 	FTimerHandle OnPivotTimer;
 
 	FTimerHandle PlayDynamicTransitionTimer;

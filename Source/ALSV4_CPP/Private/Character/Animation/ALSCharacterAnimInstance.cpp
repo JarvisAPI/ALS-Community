@@ -51,20 +51,32 @@ void UALSCharacterAnimInstance::NativeInitializeAnimation()
 	}
 }
 
+void UALSCharacterAnimInstance::Initialize()
+{
+	// NativeBeginPlay doesn't seem to be called if AnimInstance is created at runtime, so
+	// we use a function to initialize.
+	if (!bInitialized)
+	{
+		bInitialized = true;
+		if (APawn* Owner = TryGetPawnOwner())
+		{
+			ALSDebugComponent = Owner->FindComponentByClass<UALSDebugComponent>();
+		}
+	}
+}
+
 void UALSCharacterAnimInstance::NativeBeginPlay()
 {
 	// it seems to be that the player pawn components are not really initialized
 	// when the call to NativeInitializeAnimation() happens.
 	// This is the reason why it is tried here to get the ALS debug component.
-	if (APawn* Owner = TryGetPawnOwner())
-	{
-		ALSDebugComponent = Owner->FindComponentByClass<UALSDebugComponent>();
-	}
+	Initialize();
 }
 
 void UALSCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
+	Initialize();
 
 	if (!Character || DeltaSeconds == 0.0f)
 	{
@@ -510,11 +522,14 @@ void UALSCharacterAnimInstance::SetFootOffsets(float DeltaSeconds, FName EnableF
 		FVector ImpactPoint = HitResult.ImpactPoint;
 		FVector ImpactNormal = HitResult.ImpactNormal;
 
+		// Floating feet fix, for different meshes
+		const FVector AddOffset = FVector(0.0, 0.0, Config.FootIKAddOffset);
+
 		// Step 1.1: Find the difference in location from the Impact point and the expected (flat) floor location.
 		// These values are offset by the normal multiplied by the
 		// foot height to get better behavior on angled surfaces.
 		CurLocationTarget = (ImpactPoint + ImpactNormal * Config.FootHeight) -
-			(IKFootFloorLoc + FVector(0, 0, Config.FootHeight));
+			(IKFootFloorLoc + FVector(0, 0, Config.FootHeight)) + AddOffset;
 
 		// Step 1.2: Calculate the Rotation offset by getting the Atan2 of the Impact Normal.
 		TargetRotOffset.Pitch = -FMath::RadiansToDegrees(FMath::Atan2(ImpactNormal.X, ImpactNormal.Z));

@@ -482,6 +482,9 @@ struct FALSAnimConfiguration
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|Main Configuration")
 	float PelvisIKAddOffset = 0.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|Main Configuration")
+	float FootIKAddOffset = 0.0f;
+
 	/** Threshold value for activating dynamic transition on various animations */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|Main Configuration")
 	float DynamicTransitionThreshold = 8.0f;

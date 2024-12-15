@@ -98,6 +98,7 @@ void AALSPlayerCameraManager::UpdateViewTargetInternal(FTViewTarget& OutVT, floa
 		}
 		else
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Camera manager here!@#!@"));
 			OutVT.Target->CalcCamera(DeltaTime, OutVT.POV);
 		}
 	}
